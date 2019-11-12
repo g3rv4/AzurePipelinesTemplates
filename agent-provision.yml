@@ -1,0 +1,14 @@
+stages:
+- stage: StartAgent
+  pool:
+    vmImage: ubuntu-18.04
+  jobs:
+    - job: WakeUp
+      steps:
+      - checkout: none
+      - powershell: |
+          dotnet tool install --global PipelinesAgentManager.Cli
+          ~/.dotnet/tools/PipelinesAgentManager create -p $env:PIPELINES_POOL_ID -w $env:TERRAFORM_WORKSPACE_ID -m 10
+        env:
+          TERRAFORM_TOKEN: $(Terraform_Token)
+          PIPELINES_PAT: $(Pipelines_PAT)
