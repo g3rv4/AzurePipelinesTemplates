@@ -6,9 +6,17 @@ stages:
     - job: WakeUp
       steps:
       - checkout: none
+      - task: AzureKeyVault@1
+        inputs:
+          azureSubscription: keyVault
+          keyVaultName: gervasioBuild
+          secretsFilter: '*'
       - powershell: |
           dotnet tool install --global PipelinesAgentManager.Cli
-          ~/.dotnet/tools/PipelinesAgentManager create -p $env:PIPELINES_POOL_ID -w $env:TERRAFORM_WORKSPACE_ID -m 10
+          ~/.dotnet/tools/PipelinesAgentManager create -m 10
         env:
-          TERRAFORM_TOKEN: $(Terraform_Token)
-          PIPELINES_PAT: $(Pipelines_PAT)
+          TERRAFORM_TOKEN: $(Terraform-Token)
+          DEFAULT_WORKSPACE_ID: $(Terraform-Workspace-Id)
+          PIPELINES_PAT: $(Pipelines-PAT)
+          PIPELINES_ORG: g3rv4
+          DEFAULT_POOL_ID: 1
